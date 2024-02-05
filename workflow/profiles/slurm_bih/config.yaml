@@ -1,0 +1,39 @@
+# Cluster command
+cluster: mkdir -p logs/{rule} errors/{rule} &&
+  sbatch
+  --partition={resources.partition}
+  --qos={resources.qos}
+  --cpus-per-task={resources.threads}
+  --mem={resources.mem_mb}
+  --job-name=smk-{rule}-{wildcards}
+  --output=logs/{rule}/%j.out
+  --error=logs/{rule}/%j.out
+  --time={resources.time}
+
+# Default ressources for all rules
+default-resources:
+  - partition=short
+  - qos=normal
+  - mem_mb=2000
+  - threads=2
+  - time="00:30:00"
+
+set-resources:
+  - run_breakpointR:mem_mb=64G
+  - run_breakpointR:threads=32
+
+
+max-jobs-per-second: 100
+max-status-checks-per-second: 100
+local-cores: 1
+latency-wait: 60
+jobs: 100
+
+# 4 attempts to restart to correspond to the progressive memory increase solving OOM
+restart-times: 4
+keep-going: True
+rerun-incomplete: True
+# scheduler: greedy
+
+use-conda: true
+conda-frontend: "mamba"

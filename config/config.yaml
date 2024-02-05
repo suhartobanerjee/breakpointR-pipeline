@@ -1,0 +1,27 @@
+################################################################################
+# IO
+################################################################################
+data_location: "/fast/groups/ag_sanders/scratch/suharto_tmp/analysis/p3456_trbc"
+
+
+################################################################################
+# breakpointR params
+################################################################################
+pairedEndReads: "TRUE"
+minReads: 10
+maskRegions: "/fast/groups/ag_sanders/work/data/references/exclude/boyle_blacklist/hg38-blacklist.v2.bed.gz"
+reuse_existing_files: "FALSE"
+windowsize: 3000000
+background: 0.1
+binMethod: "size"
+pair2frgm: "FALSE"
+min_mapq: 10
+callHotSpots: "TRUE"
+filtAlt: "TRUE"
+total_chromosomes: 24
+
+
+################################################################################
+# Alessia's plot
+################################################################################
+ideo_dt: "workflow/data/ideogram_scaffold.tsv"
