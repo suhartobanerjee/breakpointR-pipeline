@@ -1,5 +1,5 @@
 # Cluster command
-cluster: mkdir -p logs/{rule} errors/{rule} &&
+cluster: mkdir -p logs/{rule} &&
   sbatch
   --partition={resources.partition}
   --qos={resources.qos}
