@@ -6,33 +6,12 @@ SAMPLES = [str(x).split("/")[-1] for x in Path(SCTRIP_DIR).iterdir() if x.is_dir
 
 print(config)
 print(f"samples: {SAMPLES}")
-<<<<<<< HEAD
-=======
-
-rule check_copy_selected_bams:
-    input: expand("{sctrip_dir}/breakpointR-pipeline/{sample}/selected_bam/labels.tsv", sctrip_dir=SCTRIP_DIR, sample=SAMPLES)
-    output: expand("{sctrip_dir}/breakpointR-pipeline/{sample}/checks/check_copy_selected_bams.ok", sctrip_dir=SCTRIP_DIR, sample=SAMPLES)
-    log: expand("{sctrip_dir}/breakpointR-pipeline/logs/check_copy_selected_bams.log", sctrip_dir=SCTRIP_DIR)
-    shell:
-        """
-        workflow/scripts/check_copy_selected_bams.sh {input} > {log} 2>&1
-        if [ $? -eq 0 ]; then
-            touch {output}
-        else
-            exit 1
-        fi
-        """
->>>>>>> 905c328 (auto detection of samples)
 
 
 rule all:
     input: 
         counts_bp_plot=expand("{sctrip_dir}/breakpointR-pipeline/{sample}/analysis/plots/counts_bp.pdf", sctrip_dir=SCTRIP_DIR, sample=SAMPLES),
         bp_overview_plot=expand("{sctrip_dir}/breakpointR-pipeline/{sample}/analysis/plots/bp_overview.pdf", sctrip_dir=SCTRIP_DIR, sample=SAMPLES)
-
-# rule run_breakpointR:
-#     input: 
-#         selected_bam=directory(expand("{sctrip_dir}/breakpointR-pipeline/{sample}/selected_bam", sctrip_dir=SCTRIP_DIR, sample=SAMPLES)),
 
 
 include: "rules/get_input_bam.smk"
