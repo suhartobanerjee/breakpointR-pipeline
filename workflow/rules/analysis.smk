@@ -2,8 +2,8 @@
 rule plot_bp_on_counts:
     input: 
         bp_summary=expand("{sctrip_dir}/breakpointR-pipeline/{sample}/breakpointR_output/breakpoints/breakPointSummary.txt", sctrip_dir=SCTRIP_DIR, sample=SAMPLES),
-        counts_file=expand("{sctrip_dir}/{sample}/counts/{sample}.txt.gz", sctrip_dir=SCTRIP_DIR, sample=SAMPLES),
-        info_file=expand("{sctrip_dir}/{sample}/counts/{sample}.info", sctrip_dir=SCTRIP_DIR, sample=SAMPLES)
+        counts_file=expand("{sctrip_dir}/{sample}/counts/{sample}.txt.raw.gz", sctrip_dir=SCTRIP_DIR, sample=SAMPLES),
+        info_file=expand("{sctrip_dir}/{sample}/counts/{sample}.info_raw", sctrip_dir=SCTRIP_DIR, sample=SAMPLES)
     output: expand("{sctrip_dir}/breakpointR-pipeline/{sample}/analysis/plots/counts_bp.pdf", sctrip_dir=SCTRIP_DIR, sample=SAMPLES)
     log: expand("{sctrip_dir}/breakpointR-pipeline/logs/plot_bp_on_counts_plot.log", sctrip_dir=SCTRIP_DIR)
     conda: "rda"
