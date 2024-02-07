@@ -10,14 +10,15 @@ args = commandArgs(trailingOnly=T)
 # ncores = as.numeric(args[4])
 
 
-# set chromosomes
-total_chr <- as.numeric(args[15])
+# set chromosomes acc to species
+species <- read.table(args[15])
 
-if (total_chr == 24) {
+if (species == "human") {
     chrs <- paste0("chr", c(1:22, "X", "Y"))
-} else if (total_chr == 21) {
+} else if (species == "mouse") {
     chrs <- paste0("chr", c(1:19, "X", "Y"))
 }
+
 
 print(paste("R: datafolder:", args[1]))
 print(paste("R: outputfolder:", args[2]))

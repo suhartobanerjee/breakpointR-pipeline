@@ -16,12 +16,11 @@
 
 rule copy_selected_bams:
     input: 
-        cell_list=expand("{sctrip_dir}/{sample}/cell_selection/labels.tsv", sctrip_dir=SCTRIP_DIR, sample=SAMPLES),
-        bam_dir=expand("{sctrip_dir}/{sample}/bam", sctrip_dir=SCTRIP_DIR, sample=SAMPLES)
+        cell_list=expand("{sctrip_dir}/{{sample}}/cell_selection/labels.tsv", sctrip_dir=config["data_location"]),
+        bam_dir=expand("{sctrip_dir}/{{sample}}/bam", sctrip_dir=config["data_location"])
     output: 
-        selected_bam=directory(expand("{sctrip_dir}/breakpointR-pipeline/{sample}/selected_bam", sctrip_dir=SCTRIP_DIR, sample=SAMPLES)),
-        labels_tsv=expand("{sctrip_dir}/breakpointR-pipeline/{sample}/selected_bam/labels.tsv", sctrip_dir=SCTRIP_DIR, sample=SAMPLES),
-    log: expand("{sctrip_dir}/breakpointR-pipeline/logs/copy_selected_bams.log", sctrip_dir=SCTRIP_DIR)
-    threads: 16
+        selected_bam=directory("{sctrip_dir}/breakpointR-pipeline/{sample}/selected_bam"),
+        labels_tsv="{sctrip_dir}/breakpointR-pipeline/{sample}/selected_bam/labels.tsv"
+    log: "{sctrip_dir}/breakpointR-pipeline/logs/{sample}/copy_selected_bams.log"
     shell: 
         "workflow/scripts/select_bam/copy_selected_bams.sh {input.cell_list} {input.bam_dir} {output.selected_bam} > {log} 2>&1"
