@@ -2,7 +2,7 @@ rule check_species_chr_len:
     input: expand("{sctrip_dir}/breakpointR-pipeline/{{sample}}/selected_bam", sctrip_dir=config["data_location"])
     output: 
         species_name=expand("{sctrip_dir}/breakpointR-pipeline/{{sample}}/species/species_name.txt", sctrip_dir=config["data_location"]),
-        chr_len=expand("{sctrip_dir}/breakpointR-pipeline/{{sample}}/species/chr_len.tsv", sctrip_dir=config["data_location"]),
+        chr_len=expand("{sctrip_dir}/breakpointR-pipeline/{{sample}}/species/chr_len.tsv", sctrip_dir=config["data_location"])
     log: expand("{sctrip_dir}/breakpointR-pipeline/logs/check_species/{{sample}}.log", sctrip_dir=config["data_location"])
     conda: "../envs/alignmentenv.yaml"
     shell:

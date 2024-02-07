@@ -11,8 +11,8 @@ source("workflow/scripts/plotting/methods.R")
 
 args <- commandArgs(trailingOnly = T)
 
-if(length(args) < 1 | length(args) > 4) {
-    stop("Usage: Rscript bp_counts_violin.R bp_summary chr_to_exclude condition_dt(optional) plot.pdf")
+if(length(args) < 1 | length(args) > 5) {
+    stop("Usage: Rscript bp_chr_counts_violin.R bp_summary chr_to_exclude condition_dt(optional) chr_len plot.pdf")
 }
 
 
@@ -21,8 +21,15 @@ print(str_glue("len of args = {length(args)}"))
 brk_file <- fread(args[1])
 chr_to_exclude_args <- args[2]
 chr_to_exclude <- str_split(chr_to_exclude_args, ",")[[1]]
-out_file <- args[4]
 
+chr_len_dt <- fread(args[4], header = F)
+setnames(
+    chr_len_dt,
+    c("V1", "V2"),
+    c("chrom", "chr_len")
+)
+
+out_file <- args[5]
 
 # when condition is provided
 if(args[3] != "") {
@@ -42,48 +49,54 @@ if(args[3] != "") {
 }
 
 
+brk_file <- chr_len_dt[brk_file, on = "chrom"]
 
 
 # Counting the break points per cell
 bp_count <- brk_file[!chrom %in% chr_to_exclude,
-                     .N,
-                     by = .(cell_name, condition)]
+                     .N / chr_len * 1e6,
+                     by = .(cell_name, condition, chrom)]
+bp_count
 
 
-pdf(out_file)
+pdf(out_file,
+    width = 20,
+    height = 10
+)
 # plotting the bps
 if(exists("condition_dt")) {
 
     ggplot(data = bp_count,
-           aes(x = condition,
-               y = N
+           aes(x = factor(chrom, levels = chr_len_dt$chrom),
+               y = V1,
+               fill = condition
            )
     ) +
         geom_violin() +
-        stat_summary(fun=mean,
-                     colour="darkred",
-                     geom="crossbar", 
-                     width = 0.5
-        ) + 
+#         stat_summary(fun=mean,
+#                      colour="darkred",
+#                      geom="crossbar", 
+#                      width = 0.5
+#         ) + 
         geom_point(position = "jitter") +
         stat_compare_means() +
-        labs(y = "count") +
+        labs(x = "chromosomes", y = "count / MB") +
         ggtitle("All Breakpoints")
 } else {
 
     ggplot(data = bp_count,
-           aes(x = condition,
-               y = N
+           aes(x = factor(chrom, levels = chr_len_dt$chrom),
+               y = V1
            )
     ) +
         geom_violin() +
-        stat_summary(fun=mean,
-                     colour="darkred",
-                     geom="crossbar", 
-                     width = 0.5
-        ) + 
+#         stat_summary(fun=mean,
+#                      colour="darkred",
+#                      geom="crossbar", 
+#                      width = 0.5
+#         ) + 
         geom_point(position = "jitter") +
-        labs(x = "sample", y = "count") +
+        labs(x = "chromosomes", y = "count / MB") +
         ggtitle("All Breakpoints")
 }
 

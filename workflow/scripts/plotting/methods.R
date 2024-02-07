@@ -33,7 +33,7 @@ ProcFile <- function(raw_dt, condition_dt = NULL) {
 
     # merge condition or create it
     if(!is.null(condition_dt)) {
-       condition_dt[raw_dt, on = "cell_name", nomatch = NULL]
+       raw_dt <- condition_dt[raw_dt, on = "cell_name", nomatch = NULL]
     } else {
         raw_dt[, condition := sample]
     }

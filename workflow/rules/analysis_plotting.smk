@@ -27,8 +27,26 @@ rule bp_counts_violin:
     output: expand("{sctrip_dir}/breakpointR-pipeline/{{sample}}/analysis/plots/bp_counts_violin.pdf", sctrip_dir=config["data_location"])
     log: expand("{sctrip_dir}/breakpointR-pipeline/logs/bp_counts_violin/{{sample}}.log", sctrip_dir=config["data_location"])
     params: 
-        chr_to_exclude=config["chr_to_exclude"],
-        condition_dt=config["condition_dt"]
+        chr_to_exclude=config["chr_to_exclude"] if config["chr_to_exclude"] != "" else '""',
+        condition_dt=config["condition_dt"] if config["condition_dt"] != "" else '""'
     conda: "../envs/bp_on_counts.yaml"
     shell:
-        "Rscript workflow/scripts/plotting/bp_overview_plot.R {input} {params.chr_to_exclude} {params.condition_dt} {output}"
+        """
+        Rscript workflow/scripts/plotting/bp_counts_violin.R {input} {params.chr_to_exclude} {params.condition_dt} {output}
+        """
+
+rule bp_counts_chr_violin:
+    input: 
+        bp_summary=expand("{sctrip_dir}/breakpointR-pipeline/{{sample}}/breakpointR_output/breakpoints/breakPointSummary.txt", sctrip_dir=config["data_location"]),
+        chr_len=expand("{sctrip_dir}/breakpointR-pipeline/{{sample}}/species/chr_len.tsv", sctrip_dir=config["data_location"])
+    output: expand("{sctrip_dir}/breakpointR-pipeline/{{sample}}/analysis/plots/bp_counts_chr_violin.pdf", sctrip_dir=config["data_location"])
+    log: expand("{sctrip_dir}/breakpointR-pipeline/logs/bp_counts_violin/{{sample}}.log", sctrip_dir=config["data_location"])
+    params: 
+        chr_to_exclude=config["chr_to_exclude"] if config["chr_to_exclude"] != "" else '""',
+        condition_dt=config["condition_dt"] if config["condition_dt"] != "" else '""'
+    conda: "../envs/bp_on_counts.yaml"
+    shell:
+        """
+        Rscript workflow/scripts/plotting/bp_counts_chr_violin.R {input.bp_summary} {params.chr_to_exclude} {params.condition_dt} {input.chr_len} {output}
+        """
+

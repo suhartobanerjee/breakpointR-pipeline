@@ -1,19 +1,20 @@
 import os
 
 configfile: "config/config.yaml"
-SCTRIP_DIR=config["data_location"]
-SAMPLES = [str(x).split("/")[-1] for x in Path(SCTRIP_DIR).iterdir() if x.is_dir() and str(x).split("/")[-1] not in ["log", "config", "breakpointR-pipeline"]]
+#config["data_location"]=config["data_location"]
+SAMPLES = [str(x).split("/")[-1] for x in Path(config["data_location"]).iterdir() if x.is_dir() and str(x).split("/")[-1] not in ["log", "config", "breakpointR-pipeline"]]
 
 print(config)
-print(f"samples: {SAMPLES}")
 
 
 rule all:
     input: 
-        counts_bp_plot=expand("{sctrip_dir}/breakpointR-pipeline/{sample}/analysis/plots/counts_bp.pdf", sctrip_dir=SCTRIP_DIR, sample=SAMPLES),
-        bp_overview_plot=expand("{sctrip_dir}/breakpointR-pipeline/{sample}/analysis/plots/bp_overview.pdf", sctrip_dir=SCTRIP_DIR, sample=SAMPLES)
+        counts_bp_plot=expand("{sctrip_dir}/breakpointR-pipeline/{sample}/analysis/plots/counts_bp.pdf", sctrip_dir=config["data_location"], sample=SAMPLES),
+        bp_overview_plot=expand("{sctrip_dir}/breakpointR-pipeline/{sample}/analysis/plots/bp_overview.pdf", sctrip_dir=config["data_location"], sample=SAMPLES),
+        counts_violin=expand("{sctrip_dir}/breakpointR-pipeline/{sample}/analysis/plots/bp_counts_violin.pdf", sctrip_dir=config["data_location"], sample=SAMPLES),
+        counts_chr_violin=expand("{sctrip_dir}/breakpointR-pipeline/{sample}/analysis/plots/bp_counts_chr_violin.pdf", sctrip_dir=config["data_location"], sample=SAMPLES)
 
 
 include: "rules/get_input_bam.smk"
 include: "rules/breakpointR.smk"
-include: "rules/analysis.smk"
+include: "rules/analysis_plotting.smk"
