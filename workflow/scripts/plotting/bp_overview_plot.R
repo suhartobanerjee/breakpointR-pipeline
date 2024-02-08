@@ -9,7 +9,10 @@ library(stringr)
 args <- commandArgs(trailingOnly = T)
 
 file=args[1]
-chr_len <- read.table(args[2], sep = "\t", header = T)
+chr_len <- read.table(args[2], sep = "\t", header = F)
+colnames(chr_len) <- c("chr", "chr_len")
+chr_len$chr <- str_remove(chr_len$chr, "chr")
+chr_len
 
 
 bp=read.table(file, header = T)
@@ -18,7 +21,7 @@ bp
 
 cellID <- str_split_i(bp$filenames, pattern = "\\.", i = 1) |>
     str_extract(string = _, regex("i\\d{3}"))
-sample_name <- str_extract(bp$filenames, regex("P\\d{4}"))
+sample_name <- str_split_i(bp$filenames, "_", i = 1)
 
 bp <- cbind(bp,sample_name)
 bp <- cbind(bp,cellID)
@@ -97,8 +100,8 @@ d2p$count<- as.integer(d2p$count)
 
 
 bpSize <- merge(bpSize,chr_len)
-bpSize <- bpSize %>% mutate(rel_start=width-start) %>% mutate(stand_start=start/1000000) %>% 
-  mutate(chr_len_MB=width/1000000)
+bpSize <- bpSize %>% mutate(rel_start=chr_len-start) %>% mutate(stand_start=start/1000000) %>% 
+  mutate(chr_len_MB=chr_len/1000000)
 bpSize <- merge(bpSize,d2p)
 
 bpSize <- bpSize[mixedorder(bpSize$chr), ]
