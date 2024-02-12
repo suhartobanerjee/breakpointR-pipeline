@@ -48,6 +48,12 @@ if(args[3] != "") {
 bp_count <- brk_file[!chrom %in% chr_to_exclude,
                      .N,
                      by = .(cell_name, condition)]
+setnames(
+    bp_count,
+    "N",
+    "count"
+)
+bp_count
 
 
 pdf(out_file)
@@ -56,7 +62,7 @@ if(exists("condition_dt")) {
 
     ggplot(data = bp_count,
            aes(x = condition,
-               y = N
+               y = count
            )
     ) +
         geom_violin() +
@@ -65,7 +71,7 @@ if(exists("condition_dt")) {
                      geom="crossbar", 
                      width = 0.5
         ) + 
-        geom_point(position = "jitter") +
+        geom_point(position = position_jitter(w = 0.1, h = 0)) +
         stat_compare_means() +
         labs(y = "count") +
         ggtitle("All Breakpoints")
@@ -73,7 +79,7 @@ if(exists("condition_dt")) {
 
     ggplot(data = bp_count,
            aes(x = condition,
-               y = N
+               y = count
            )
     ) +
         geom_violin() +
@@ -82,7 +88,7 @@ if(exists("condition_dt")) {
                      geom="crossbar", 
                      width = 0.5
         ) + 
-        geom_point(position = "jitter") +
+        geom_point(position = position_jitter(w = 0.1, h = 0)) +
         labs(x = "sample", y = "count") +
         ggtitle("All Breakpoints")
 }

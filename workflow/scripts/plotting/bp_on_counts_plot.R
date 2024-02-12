@@ -14,8 +14,11 @@ format_Mb <- function(x) {
     paste(comma(x/1e6), "Mb")
 }
 
-breakpoints_counts_plot = function(breakpoints, counts_file = NA, 
-                                   info_file = NA, output_destination = NA){
+breakpoints_counts_plot = function(breakpoints, 
+                                   counts_file = NA, 
+                                   info_file = NA,
+                                   species = NA,
+                                   output_destination = NA){
     
     if(is.na(counts_file)) stop("ERROR: please specify counts file")
     if(is.na(info_file)) stop("ERROR: please specify info file")
@@ -27,6 +30,8 @@ breakpoints_counts_plot = function(breakpoints, counts_file = NA,
     
     f_in <- counts_file
     info = fread(info_file)
+    species_name <- fread(species, header = F)
+    print(species_name)
     
     # Detect info or SCE file.
     # info <- NULL
@@ -70,9 +75,16 @@ breakpoints_counts_plot = function(breakpoints, counts_file = NA,
                           "class" %in% colnames(d)))
     
     # Re-name and -order chromosomes - this is human-specific
-    d = d[, chrom := sub('^chr','',chrom)][]
-    d = d[grepl('^([1-9]|[12][0-9]|X|Y)$', chrom),]
-    d = d[, chrom := factor(chrom, levels=as.character(c(1:22,'X','Y')), ordered = T)]
+    # suh: ifels based on species
+    if (species_name == "human") {
+        d = d[, chrom := sub('^chr','',chrom)][]
+        d = d[grepl('^([1-9]|[12][0-9]|X|Y)$', chrom),]
+        d = d[, chrom := factor(chrom, levels=as.character(c(1:22,'X','Y')), ordered = T)]
+    } else if (species_name == "mouse") {
+        d = d[, chrom := sub('^chr','',chrom)][]
+        d = d[grepl('^([1-9]|[1][0-9]|X|Y)$', chrom),]
+        d = d[, chrom := factor(chrom, levels=as.character(c(1:19,'X','Y')), ordered = T)]
+    }
     
     
     message("* Writing plot ", output_destination)
@@ -373,8 +385,8 @@ breakpoints_counts_plot = function(breakpoints, counts_file = NA,
 
 # 1. cmd args ----
 args <- commandArgs(trailingOnly=T)
-if (length(args) != 4) {
-    stop("Usage: Rscript bp_on_counts_plot.R bp_summary counts_file info_file output_dir")
+if (length(args) != 5) {
+    stop("Usage: Rscript bp_on_counts_plot.R bp_summary counts_file info_file species output_dir")
 }
 
 
@@ -390,5 +402,6 @@ bp_summary = read.table(args[1],
 breakpoints_counts_plot(breakpoints = bp_summary, 
                         counts_file = args[2],
                         info_file = args[3],
-                        output_destination = args[4])
+                        species = args[4],
+                        output_destination = args[5])
 

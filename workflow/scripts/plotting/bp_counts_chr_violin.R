@@ -4,6 +4,7 @@ library(data.table)
 library(ggplot2)
 library(ggpubr)
 library(stringr)
+library(purrr)
 
 # Sourcing methods file
 source("workflow/scripts/plotting/methods.R")
@@ -56,46 +57,82 @@ brk_file <- chr_len_dt[brk_file, on = "chrom"]
 bp_count <- brk_file[!chrom %in% chr_to_exclude,
                      .N / chr_len * 1e6,
                      by = .(cell_name, condition, chrom)]
+setnames(
+    bp_count,
+    "V1",
+    "count"
+)
 bp_count
+
+
+# taking the called chrs only
+all_chr <- chr_len_dt[chrom %in% unique(brk_file$chrom), chrom]
+
+# func to return the non called chr for each cell_name and condition
+get_non_called_chr <- function(dt_slice) {
+
+    return(all_chr[!all_chr %in% dt_slice[, chrom]])
+}
+excluded_chrs <- bp_count[, get_non_called_chr(.SD), by = .(cell_name, condition)]
+setnames(
+    excluded_chrs,
+    "V1",
+    "chrom"
+)
+excluded_chrs[, count := 0]
+excluded_chrs
+
+plot_dt <- rbind(bp_count, excluded_chrs)
 
 
 pdf(out_file,
     width = 20,
-    height = 10
+    height = 15
 )
 # plotting the bps
 if(exists("condition_dt")) {
 
-    ggplot(data = bp_count,
+    ggplot(data = plot_dt,
            aes(x = factor(chrom, levels = chr_len_dt$chrom),
-               y = V1,
+               y = count,
                fill = condition
            )
     ) +
         geom_violin() +
-#         stat_summary(fun=mean,
-#                      colour="darkred",
-#                      geom="crossbar", 
-#                      width = 0.5
-#         ) + 
-        geom_point(position = "jitter") +
+        stat_summary(fun=mean,
+                     colour="darkred",
+                     geom="crossbar", 
+                     width = 0.5
+        ) + 
+        geom_point(position = position_jitter(w = 0.3, h = 0)) +
         stat_compare_means() +
         labs(x = "chromosomes", y = "count / MB") +
         ggtitle("All Breakpoints")
 } else {
 
-    ggplot(data = bp_count,
+#     comparisons <- imap(all_chr, function(chr, idx) {
+#                            map(all_chr[idx:length(all_chr)], function(chr2) {
+#                                    if (chr2 != chr) {
+#                                        c(chr, chr2)   
+#                                    }
+#            })
+#         })
+#     comparisons <- unlist(comparisons, recursive = F)
+#     comparisons <- discard(comparisons, is.null)
+#     print(comparisons)
+    ggplot(data = plot_dt,
            aes(x = factor(chrom, levels = chr_len_dt$chrom),
-               y = V1
+               y = count
            )
     ) +
         geom_violin() +
-#         stat_summary(fun=mean,
-#                      colour="darkred",
-#                      geom="crossbar", 
-#                      width = 0.5
-#         ) + 
-        geom_point(position = "jitter") +
+        stat_summary(fun=mean,
+                     colour="darkred",
+                     geom="crossbar", 
+                     width = 0.5
+        ) + 
+        geom_point(position = position_jitter(w = 0.3, h = 0)) +
+#         stat_compare_means(comparisons = comparisons, label = "p.signif") +
         labs(x = "chromosomes", y = "count / MB") +
         ggtitle("All Breakpoints")
 }
