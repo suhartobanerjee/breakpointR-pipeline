@@ -4,7 +4,7 @@ configfile: "config/config.yaml"
 #config["data_location"]=config["data_location"]
 SAMPLES = [str(x).split("/")[-1] for x in Path(config["data_location"]).iterdir() if x.is_dir() and str(x).split("/")[-1] not in ["log", "config", "breakpointR-pipeline"]]
 
-print(config)
+# print(config)
 
 
 rule all:

@@ -13,10 +13,16 @@
 #        fi
 #        """
 
+def get_selection_list(wildcards):
+    if(config["manual_selection"] != ""):
+        return config["manual_selection"]
+    else:
+        return wildcards.sctrip_dir + "/" + wildcards.sample + "/cell_selection/labels.tsv"
+
 
 rule copy_selected_bams:
     input: 
-        cell_list=expand("{sctrip_dir}/{{sample}}/cell_selection/labels.tsv", sctrip_dir=config["data_location"]),
+        cell_list=get_selection_list,
         bam_dir=expand("{sctrip_dir}/{{sample}}/bam", sctrip_dir=config["data_location"])
     output: 
         selected_bam=directory("{sctrip_dir}/breakpointR-pipeline/{sample}/selected_bam"),
