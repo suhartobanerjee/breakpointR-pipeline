@@ -1,26 +1,24 @@
 # Cluster command
-cluster: mkdir -p logs/{rule} &&
+cluster: mkdir -p logs/{rule} errors/{rule} &&
   sbatch
   --partition={resources.partition}
-  --qos={resources.qos}
   --cpus-per-task={resources.threads}
   --mem={resources.mem_mb}
-  --job-name=smk-{rule}-{wildcards}
+  --job-name=bpp-{rule}-{wildcards}
   --output=logs/{rule}/%j.out
-  --error=logs/{rule}/%j.out
+  --error=errors/{rule}/%j.out
   --time={resources.time}
 
 # Default ressources for all rules
 default-resources:
   - partition=short
-  - qos=normal
   - mem_mb=2000
   - threads=2
   - time="00:30:00"
 
 set-resources:
   - copy_selected_bams:threads=16
-  - run_breakpointR:mem_mb=64G
+  - run_breakpointR:mem_mb=120G
   - run_breakpointR:threads=32
 
 

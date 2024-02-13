@@ -2,24 +2,45 @@ import os
 import yaml
 from pathlib import Path
 
-configfile_location = "config/config.yaml"
-configfile: configfile_location
-
+counter = 0
+configfile: "config/config.yaml"
 data_location = Path(config["data_location"])
-SAMPLES = [str(x).split("/")[-1] for x in data_location.iterdir() if x.is_dir() and str(x).split("/")[-1] not in ["log", "config", "breakpointR-pipeline"]]
-config["samples"] = SAMPLES
 
 # saving a custom copy of the config file
+# creating the config dir
 new_config_loc = data_location.joinpath("breakpointR-pipeline", "config")
 Path(new_config_loc).mkdir(parents=True, exist_ok=True)
 
 # save the config the first time only
 new_config = new_config_loc.joinpath("config.yaml")
 if not new_config.is_file():
+    configfile_location = "config/config.yaml"
     with open(new_config, "w") as file:
         yaml.safe_dump(config, file)
+    counter += 1
+else:
+    configfile_location = new_config
 
-configfile_location = new_config_loc
+configfile: configfile_location
+
+
+SAMPLES = [str(x).split("/")[-1] for x in data_location.iterdir() if x.is_dir() and str(x).split("/")[-1] not in ["log", "config", "breakpointR-pipeline"]]
+config["samples"] = SAMPLES
+
+# # saving a custom copy of the config file
+# new_config_loc = data_location.joinpath("breakpointR-pipeline", "config")
+# Path(new_config_loc).mkdir(parents=True, exist_ok=True)
+# 
+# # save the config the first time only
+# new_config = new_config_loc.joinpath("config.yaml")
+# if not new_config.is_file():
+#     with open(new_config, "w") as file:
+#         yaml.safe_dump(config, file)
+# 
+# if counter > 0:
+#     configfile_location = new_config_loc
+# 
+# configfile: new_config
 
 print(config)
 

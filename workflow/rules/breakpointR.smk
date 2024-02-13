@@ -41,7 +41,6 @@ checkpoint save_config:
 rule run_breakpointR:
     input: 
         bam_dir=expand("{sctrip_dir}/breakpointR-pipeline/{{sample}}/selected_bam", sctrip_dir=config["data_location"]),
-        species_name=expand("{sctrip_dir}/breakpointR-pipeline/{{sample}}/species/species_name.txt", sctrip_dir=config["data_location"]),
         check=expand("{sctrip_dir}/breakpointR-pipeline/{{sample}}/species/checkpoint.ok", sctrip_dir=config["data_location"]),
     output: 
         out_dir=directory(expand("{sctrip_dir}/breakpointR-pipeline/{{sample}}/breakpointR_output", sctrip_dir=config["data_location"])),
@@ -65,7 +64,7 @@ rule run_breakpointR:
             {config[min_mapq]} \
             {config[callHotSpots]} \
             {config[filtAlt]} \
-            {input.species_name}
+            {config[species]}
         """
 
 

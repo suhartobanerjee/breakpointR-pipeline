@@ -5,6 +5,7 @@ library(ggplot2)
 library(ggpubr)
 library(stringr)
 library(purrr)
+library(gtools)
 
 # Sourcing methods file
 source("workflow/scripts/plotting/methods.R")
@@ -80,9 +81,10 @@ setnames(
     "chrom"
 )
 excluded_chrs[, count := 0]
-excluded_chrs
 
 plot_dt <- rbind(bp_count, excluded_chrs)
+chr_len_dt
+# $chrom <- factor(chr_len_dt$chrom, levels = gtools::mixedorder(as.character(chr_len_dt$chrom)))
 
 
 pdf(out_file,
@@ -93,7 +95,7 @@ pdf(out_file,
 if(exists("condition_dt")) {
 
     ggplot(data = plot_dt,
-           aes(x = factor(chrom, levels = chr_len_dt$chrom),
+           aes(x = factor(chrom, levels = mixedsort(unique(chrom))),
                y = count,
                fill = condition
            )
@@ -121,7 +123,7 @@ if(exists("condition_dt")) {
 #     comparisons <- discard(comparisons, is.null)
 #     print(comparisons)
     ggplot(data = plot_dt,
-           aes(x = factor(chrom, levels = chr_len_dt$chrom),
+           aes(x = factor(chrom, levels = mixedsort(unique(chrom))),
                y = count
            )
     ) +
