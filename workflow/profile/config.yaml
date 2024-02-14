@@ -17,7 +17,6 @@ default-resources:
   - time="00:30:00"
 
 set-resources:
-  - copy_selected_bams:threads=16
   - run_breakpointR:mem_mb=120G
   - run_breakpointR:threads=32
 

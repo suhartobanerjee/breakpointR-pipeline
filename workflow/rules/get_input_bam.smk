@@ -20,7 +20,7 @@ def get_selection_list(wildcards):
         return wildcards.sctrip_dir + "/" + wildcards.sample + "/cell_selection/labels.tsv"
 
 
-rule copy_selected_bams:
+rule symlink_selected_bams:
     input: 
         cell_list=get_selection_list,
         bam_dir=expand("{sctrip_dir}/{{sample}}/bam", sctrip_dir=config["data_location"])
@@ -29,4 +29,4 @@ rule copy_selected_bams:
         labels_tsv="{sctrip_dir}/breakpointR-pipeline/{sample}/selected_bam/labels.tsv"
     log: "{sctrip_dir}/breakpointR-pipeline/logs/{sample}/copy_selected_bams.log"
     shell: 
-        "workflow/scripts/select_bam/copy_selected_bams.sh {input.cell_list} {input.bam_dir} {output.selected_bam} > {log} 2>&1"
+        "workflow/scripts/select_bam/symlink_selected_bams.sh {input.cell_list} {input.bam_dir} {output.selected_bam}"
