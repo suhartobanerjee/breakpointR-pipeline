@@ -31,12 +31,6 @@ ProcFile <- function(raw_dt, condition_dt = NULL) {
     raw_dt[, cell_name := str_extract(filenames, regex("i[[:digit:]]{3}"))]
     #     raw_dt[, cell_name := tstrsplit(filenames, "\\.", keep = 1)]
 
-    # merge condition or create it
-    if(!is.null(condition_dt)) {
-       raw_dt <- condition_dt[raw_dt, on = "cell_name", nomatch = NULL]
-    } else {
-        raw_dt[, condition := sample]
-    }
 
     setcolorder(
         raw_dt,
