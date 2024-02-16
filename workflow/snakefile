@@ -50,6 +50,8 @@ rule all:
         bp_overview_plot=expand("{sctrip_dir}/breakpointR-pipeline/{sample}/analysis/plots/{sample}_bp_overview.pdf", sctrip_dir=config["data_location"], sample=SAMPLES),
         counts_violin=expand("{sctrip_dir}/breakpointR-pipeline/{sample}/analysis/plots/{sample}_bp_counts_violin.pdf", sctrip_dir=config["data_location"], sample=SAMPLES),
         counts_chr_violin=expand("{sctrip_dir}/breakpointR-pipeline/{sample}/analysis/plots/{sample}_bp_counts_chr_violin.pdf", sctrip_dir=config["data_location"], sample=SAMPLES)
+    output: directory(expand("{sctrip_dir}/breakpointR-pipeline/{sample}/../logs/", sctrip_dir=config["data_location"], sample=SAMPLES))
+    shell: "mv logs {output}"
 
 
 include: "rules/get_input_bam.smk"
