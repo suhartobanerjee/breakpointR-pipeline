@@ -5,7 +5,6 @@ rule check_species_chr_len:
     output: 
         species_name=expand("{sctrip_dir}/breakpointR-pipeline/{{sample}}/species/species_name.txt", sctrip_dir=config["data_location"]),
         chr_len=expand("{sctrip_dir}/breakpointR-pipeline/{{sample}}/species/chr_len.tsv", sctrip_dir=config["data_location"])
-    log: expand("{sctrip_dir}/breakpointR-pipeline/logs/check_species/{{sample}}.log", sctrip_dir=config["data_location"])
     conda: "../envs/alignmentenv.yaml"
     shell:
         "workflow/scripts/select_bam/check_species.sh {input} {output.species_name} {output.chr_len}"
@@ -17,7 +16,6 @@ checkpoint save_config:
     output: 
         check=expand("{sctrip_dir}/breakpointR-pipeline/{{sample}}/species/checkpoint.ok", sctrip_dir=config["data_location"]),
         config_file=expand("{sctrip_dir}/breakpointR-pipeline/{{sample}}/../config/config.yaml", sctrip_dir=config["data_location"])
-    log: expand("{sctrip_dir}/breakpointR-pipeline/logs/save_config/{{sample}}.log", sctrip_dir=config["data_location"])
     run:
         with open(input[0], "r") as file:
             species = file.read()
@@ -45,7 +43,6 @@ rule run_breakpointR:
     output: 
         out_dir=directory(expand("{sctrip_dir}/breakpointR-pipeline/{{sample}}/breakpointR_output", sctrip_dir=config["data_location"])),
         bp_summary=expand("{sctrip_dir}/breakpointR-pipeline/{{sample}}/breakpointR_output/breakpoints/breakPointSummary.txt", sctrip_dir=config["data_location"])
-    log: expand("{sctrip_dir}/breakpointR-pipeline/logs/run_breakpointR/{{sample}}.log", sctrip_dir=config["data_location"])
     conda: "../envs/breakpointR.yaml"
     shell:
         """
@@ -64,6 +61,7 @@ rule run_breakpointR:
             {config[min_mapq]} \
             {config[callHotSpots]} \
             {config[filtAlt]} \
+            {config[createCompositeFile]} \
             {config[species]}
         """
 

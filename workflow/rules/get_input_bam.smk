@@ -1,7 +1,6 @@
 #rule check_copy_selected_bams:
 #    input: expand("{sctrip_dir}/breakpointR-pipeline/{sample}/selected_bam/labels.tsv", sctrip_dir=SCTRIP_DIR, sample=SAMPLES)
 #    output: expand("{sctrip_dir}/breakpointR-pipeline/{sample}/checks/check_copy_selected_bams.ok", sctrip_dir=SCTRIP_DIR, sample=SAMPLES)
-#    log: expand("{sctrip_dir}/breakpointR-pipeline/logs/check_copy_selected_bams.log", sctrip_dir=SCTRIP_DIR)
 #    shell:
 #        """
 #        workflow/scripts/select_bam/check_copy_selected_bams.sh {input} > {log} 2>&1
@@ -27,6 +26,5 @@ rule symlink_selected_bams:
     output: 
         selected_bam=directory("{sctrip_dir}/breakpointR-pipeline/{sample}/selected_bam"),
         labels_tsv="{sctrip_dir}/breakpointR-pipeline/{sample}/selected_bam/labels.tsv"
-    log: "{sctrip_dir}/breakpointR-pipeline/logs/{sample}/copy_selected_bams.log"
     shell: 
         "workflow/scripts/select_bam/symlink_selected_bams.sh {input.cell_list} {input.bam_dir} {output.selected_bam}"

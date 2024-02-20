@@ -5,8 +5,8 @@ cluster: mkdir -p logs/{rule} &&
   --cpus-per-task={resources.threads}
   --mem={resources.mem_mb}
   --job-name=bpp-{rule}-{wildcards}
-  --output=logs/{rule}/{wildcards.sample}/%j.out
-  --error=logs/{rule}/{wildcards.sample}/%j.out
+  --output=logs/{rule}/%j.out
+  --error=logs/{rule}/%j.out
   --time={resources.time}
 
 # Default ressources for all rules

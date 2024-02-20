@@ -58,6 +58,3 @@ include: "rules/get_input_bam.smk"
 include: "rules/breakpointR.smk"
 include: "rules/analysis_plotting.smk"
 
-
-rule clean_logs:
-    shell: "rm -r logs"

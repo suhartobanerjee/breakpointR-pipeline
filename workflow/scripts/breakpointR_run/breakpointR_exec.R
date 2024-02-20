@@ -11,9 +11,9 @@ args = commandArgs(trailingOnly=T)
 
 
 # set chromosomes acc to species
-if (args[15] == "human") {
+if (args[16] == "human") {
     chrs <- paste0("chr", c(1:22, "X", "Y"))
-} else if (args[15] == "mouse") {
+} else if (args[16] == "mouse") {
     chrs <- paste0("chr", c(1:19, "X", "Y"))
 }
 

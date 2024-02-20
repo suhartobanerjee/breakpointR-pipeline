@@ -1,7 +1,7 @@
 ################################################################################
 # data
 ################################################################################
-data_location: "/fast/groups/ag_sanders/scratch/suharto_tmp/analysis/p3456_trbc"
+data_location: ""
 manual_selection: ""
 
 
@@ -19,6 +19,7 @@ pair2frgm: "FALSE"
 min_mapq: 10
 callHotSpots: "TRUE"
 filtAlt: "TRUE"
+createCompositeFile: "TRUE"
 species: ""
 
 
