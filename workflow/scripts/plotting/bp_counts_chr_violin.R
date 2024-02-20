@@ -13,8 +13,8 @@ source("workflow/scripts/plotting/methods.R")
 
 args <- commandArgs(trailingOnly = T)
 
-if(length(args) < 1 | length(args) > 4) {
-    stop("Usage: Rscript bp_chr_counts_violin.R bp_summary chr_to_exclude chr_len plot.pdf")
+if(length(args) < 1 | length(args) > 5) {
+    stop("Usage: Rscript bp_chr_counts_violin.R bp_summary chr_to_exclude chr_len out_tsv plot.pdf")
 }
 
 
@@ -23,7 +23,8 @@ print(str_glue("len of args = {length(args)}"))
 brk_file <- fread(args[1])
 chr_to_exclude_args <- args[2]
 chr_len_dt <- fread(args[3], header = F)
-out_file <- args[4]
+out_tsv <- args[4]
+out_file <- args[5]
 
 
 # Pre-processing the input args
@@ -65,8 +66,14 @@ setnames(
 )
 excluded_chrs[, count := 0]
 
-plot_dt <- rbind(bp_count, excluded_chrs)
+bp_count <- rbind(bp_count, excluded_chrs)
 chr_len_dt
+
+fwrite(
+    x = bp_count,
+    file = out_tsv,
+    sep = "\t"
+)
 
 
 pdf(out_file,
@@ -74,7 +81,7 @@ pdf(out_file,
     height = 15
 )
 
-ggplot(data = plot_dt,
+ggplot(data = bp_count,
        aes(x = factor(chrom, levels = mixedsort(unique(chrom))),
            y = count
        )

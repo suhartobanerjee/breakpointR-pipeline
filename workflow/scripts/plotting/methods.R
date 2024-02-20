@@ -28,7 +28,7 @@ ProcFile <- function(raw_dt, condition_dt = NULL) {
         start = 0,
         stop = 5
     )]
-    raw_dt[, cell_name := str_extract(filenames, regex("i[[:digit:]]{3}"))]
+    raw_dt[, cell_name := str_split_i(filenames, "\\.", i = 1)]
     #     raw_dt[, cell_name := tstrsplit(filenames, "\\.", keep = 1)]
 
 

@@ -12,8 +12,8 @@ source("workflow/scripts/plotting/methods.R")
 
 args <- commandArgs(trailingOnly = T)
 
-if(length(args) < 1 | length(args) > 4) {
-    stop("Usage: Rscript bp_counts_violin.R bp_summary cell_list chr_to_exclude plot.pdf")
+if(length(args) < 1 | length(args) > 5) {
+    stop("Usage: Rscript bp_counts_violin.R bp_summary cell_list chr_to_exclude out_tsv plot.pdf")
 }
 
 
@@ -22,7 +22,8 @@ print(str_glue("len of args = {length(args)}"))
 brk_file <- fread(args[1])
 cell_list <- fread(args[2])
 chr_to_exclude_args <- args[3]
-out_file <- args[4]
+out_tsv <- args[4]
+out_file <- args[5]
 cell_list
 
 
@@ -30,6 +31,7 @@ cell_list
 ProcFile(brk_file)
 chr_to_exclude <- str_split(chr_to_exclude_args, ",")[[1]]
 cell_list <- cell_list[prediction == 1]
+cell_list[, cell := str_split_i(cell, "\\." , i = 1)]
 
 
 # Counting the break points per cell
@@ -57,6 +59,13 @@ if(length(excluded_cells_vec) > 0) {
     )
     bp_count <- rbind(bp_count, excluded_cells)
 }
+
+
+fwrite(
+    x = bp_count,
+    file = out_tsv,
+    sep = "\t"
+)
 
 
 pdf(out_file)
