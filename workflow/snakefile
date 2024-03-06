@@ -6,6 +6,24 @@ counter = 0
 configfile: "config/config.yaml"
 data_location = Path(config["data_location"])
 
+
+if counter == 0:
+    print(r"""
+
+        ____                  __               _       __  ____        ____  _            ___          
+       / __ )________  ____ _/ /______  ____  (_____  / /_/ __ \      / __ \(_____  ___  / (_____  ___ 
+      / __  / ___/ _ \/ __ `/ //_/ __ \/ __ \/ / __ \/ __/ /_/ ______/ /_/ / / __ \/ _ \/ / / __ \/ _ \
+     / /_/ / /  /  __/ /_/ / ,< / /_/ / /_/ / / / / / /_/ _, _/_____/ ____/ / /_/ /  __/ / / / / /  __/
+    /_____/_/   \___/\__,_/_/|_/ .___/\____/_/_/ /_/\__/_/ |_|     /_/   /_/ .___/\___/_/_/_/ /_/\___/ 
+                              /_/                                         /_/                          
+
+    """)
+
+    print("config:\n")
+    for key in config:
+        print(f"{key}: {config[key]}")
+
+
 # saving a custom copy of the config file
 # creating the config dir
 new_config_loc = data_location.joinpath("breakpointR-pipeline", "config")
@@ -43,21 +61,6 @@ config["samples"] = SAMPLES
 # configfile: new_config
 
 
-if counter == 0:
-    print(r"""
-
-        ____                  __               _       __  ____        ____  _            ___          
-       / __ )________  ____ _/ /______  ____  (_____  / /_/ __ \      / __ \(_____  ___  / (_____  ___ 
-      / __  / ___/ _ \/ __ `/ //_/ __ \/ __ \/ / __ \/ __/ /_/ ______/ /_/ / / __ \/ _ \/ / / __ \/ _ \
-     / /_/ / /  /  __/ /_/ / ,< / /_/ / /_/ / / / / / /_/ _, _/_____/ ____/ / /_/ /  __/ / / / / /  __/
-    /_____/_/   \___/\__,_/_/|_/ .___/\____/_/_/ /_/\__/_/ |_|     /_/   /_/ .___/\___/_/_/_/ /_/\___/ 
-                              /_/                                         /_/                          
-
-    """)
-
-    print("config:\n")
-    for key in config:
-        print(f"{key}: {config[key]}")
 
 
 rule all:
